@@ -1,0 +1,10 @@
+.element__image-heart_active {
+  /*background-image: url(../../../../image/BlackHeart.svg);*/
+ background-image: url(../../../../image/BlackHeart.svg);
+  min-width: 22px;
+  min-height: 19px;
+  background-repeat: no-repeat;
+  border: 0;
+  background-color: #ffff;
+}
+

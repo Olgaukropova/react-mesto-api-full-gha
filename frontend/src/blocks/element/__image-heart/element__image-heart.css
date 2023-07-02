@@ -1,0 +1,13 @@
+.element__image-heart {
+  background-image: url(../../../image/heart.svg);
+  min-width: 22px;
+  min-height: 19px;
+  background-repeat: no-repeat;
+  border: 0;
+  background-color: #ffff;
+}
+
+.element__image-heart:hover {
+  cursor: pointer;
+  opacity: 0.5;
+}

@@ -1,0 +1,30 @@
+.profile__avatar-icon {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  position: relative;
+  border: none;
+  padding: 0;
+  margin-right: 30px;
+}
+
+.profile__avatar-icon:before {
+  position: absolute;
+  display: block;
+  content: '';
+  background-image: url("../../../image/penAvatar.svg");
+  background-color: rgba(0, 0, 0, .8);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 26px 26px;
+  z-index: 1;
+  visibility: hidden;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 120px;
+}
+
+.profile__avatar-icon:hover::before {
+  visibility: visible;
+}

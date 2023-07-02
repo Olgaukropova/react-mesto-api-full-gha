@@ -1,0 +1,15 @@
+.profile__info {
+  width: 100%;
+  min-width: 336px;
+  margin-top: 22px;
+  box-sizing: border-box;
+}
+
+@media (max-width:1000px) {
+  .profile__info {
+    width: 100%;
+    min-width: 282px;
+    margin-top: 26px;
+  }
+}
+

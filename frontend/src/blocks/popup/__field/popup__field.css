@@ -1,0 +1,28 @@
+.popup__field {
+  border: 0;
+  padding: 0;
+  font-family: 'Inter', 'Arial', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #000000;
+  min-height: 28px;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, .2);
+}
+
+.popup__field:first-child {
+  margin-top: 0;
+}
+
+@media (max-width:650px) {
+  .popup__field {
+    padding-bottom: 5px;
+    min-height: 17px;
+  }
+}
+
+.popup__field.popup__field_type_error {
+  border-bottom: 1px solid #FF0000;
+}
