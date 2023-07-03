@@ -25,10 +25,8 @@ const validateSignUp = celebrate({
 // пользователь
 // getUserById
 const validateUserById = celebrate({
-  body: Joi.object().keys({
-    params: Joi.object().keys({
-      id: Joi.string().required(),
-    }),
+  params: Joi.object().keys({
+    id: Joi.string().hex().length(24).required(),
   }),
 });
 
@@ -51,7 +49,7 @@ const validateUpdateAvatar = celebrate({
 // создание карточки
 const validateCreateCard = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30).required(),
     link: Joi.string().pattern(RegExpForUrlValidation).required(),
   }),
 });
@@ -59,7 +57,7 @@ const validateCreateCard = celebrate({
 // для удаленияб лайка и дизлайка карточки
 const validateCardId = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().required(),
+    id: Joi.string().hex().length(24).required(),
   }),
 });
 
