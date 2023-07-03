@@ -12,14 +12,14 @@ const {
   validateCardId,
 } = require('../middlewares/validations');
 
-router.get('/cards', getCards);
+router.get('/', getCards);
 
-router.post('/cards', validateCreateCard, createCard);
+router.post('/', validateCreateCard, createCard);
 
-router.delete('/cards/:id', validateCardId, deleteCard);
+router.delete('/:id', validateCardId, deleteCard);
 
-router.put('/cards/:id/likes', validateCardId, likeCard); // поставить лайк карточке
+router.put('/:id/likes', validateCardId, likeCard); // поставить лайк карточке
 
-router.delete('/cards/:id/likes', validateCardId, dislikeCard); // убрать лайк с карточки
+router.delete('/:id/likes', validateCardId, dislikeCard); // убрать лайк с карточки
 
 module.exports = router;

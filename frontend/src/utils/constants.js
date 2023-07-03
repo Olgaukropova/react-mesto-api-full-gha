@@ -7,3 +7,5 @@ export const validationConfig = {
   inputErrorClass: 'popup__field_type_error',
   errorClass: 'popup__field-error_active',
 };
+
+export const API_URL = 'https://api.mesto.olga.nomoreparties.sbs';

@@ -1,7 +1,12 @@
+import { API_URL } from './constants';
+
 class Api {
   constructor(config) {
     this._baseUrl = config.baseUrl;
-    this._headers = config.headers;
+    this._options = {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    };
   }
   _checkResponse(res) {
     if (res.ok) {
@@ -10,142 +15,76 @@ class Api {
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
+  _fetch(url) {
+    //проверка тела в запросах с методом GET и DELETE
+    if (this._options.method.includes('GET') || this._options.method.includes('DELETE')) {
+      //если есть тело - удалим
+      if ('body' in this._options) delete this._options.body;
+    }
+
+    return fetch(url, this._options).then(this._checkResponse);
+  }
+
   //запрос данных о пользователе с сервера
   getUserInfo() {
-    return fetch(`${this._baseUrl}/users/me`, {
-      method: 'GET',
-      headers: this._headers
-    })
-      .then(this._checkResponse);
-
+    this._options.method = 'GET';
+    return this._fetch(this._baseUrl + '/users/me');
   }
 
   //загрузка карточек из массива
   getInitialCards() {
-    return fetch(`${this._baseUrl}/cards`, {
-      headers: this._headers
-    }
-    )
-      .then(this._checkResponse);
+    this._options.method = 'GET';
+    return this._fetch(`${this._baseUrl}/cards`);
   }
-  //редактирование профиля
-  // editUserInfo(data) {
-  //   return fetch(`${this._baseUrl}/users/me`, {
-  //     method: 'PATCH',
-  //     headers: this._headers,
-  //     'Content-Type': 'application/json',
-  //     body: JSON.stringify({
-  //       name: data.name,
-  //       about: data.job
-  //     })
-  //   })
-  //   .then(this._checkResponse);
-  // }
 
   changeUserInfo(data) {
-    return fetch(`${this._baseUrl}/users/me`, {
-      method: "PATCH",
-      headers: this._headers,
-      body: JSON.stringify(data),
-    }).then(this._checkResponse);
+    this._options.method = 'PATCH';
+    this._options.body = JSON.stringify(data);
+    return this._fetch(`${this._baseUrl}/users/me`);
   }
 
   //запрос на добавление карточки
   addCard(data) {
-    return fetch(`${this._baseUrl}/cards`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: this._headers,
-      'Content-Type': 'application/json'
-    })
-      .then(this._checkResponse);
+    this._options.method = 'POST';
+    this._options.body = JSON.stringify(data);
+    return this._fetch(`${this._baseUrl}/cards`);
   }
 
   //Попап удаления карточки
   removeCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}`, {
-      method: 'DELETE',
-      headers: this._headers
-    })
-      .then(this._checkResponse);
+    this._options.method = 'DELETE';
+    return this._fetch(`${this._baseUrl}/cards/${cardId}`);
   }
 
   //постановка лайка
   addLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: 'PUT',
-      headers: this._headers
-    })
-      .then(this._checkResponse);
+    this._options.method = 'PUT';
+    return this._fetch(`${this._baseUrl}/cards/${cardId}/likes`);
   }
 
   //удаление лайка
   deleteLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: 'DELETE',
-      headers: this._headers
-    })
-      .then(this._checkResponse);
+    this._options.method = 'DELETE';
+    return this._fetch(`${this._baseUrl}/cards/${cardId}/likes`);
   }
 
   changeLikeCardStatus(cardId, isLiked) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: !isLiked ? "PUT" : "DELETE",
-      headers: this._headers
-    })
-      .then(this._checkResponse);
+    this._options.method = !isLiked ? 'PUT' : 'DELETE';
+    return this._fetch(`${this._baseUrl}/cards/${cardId}/likes`);
   }
 
   //изменить аватар
   setUserAvatar(data) {
-    return fetch(`${this._baseUrl}/users/me/avatar`, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-      headers: this._headers
-    })
-      .then(this._checkResponse);
+    this._options.method = 'PATCH';
+    this._options.body = JSON.stringify(data);
+    return this._fetch(`${this._baseUrl}/users/me/avatar`);
   }
 }
 
 export const api = new Api({
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-62',
-  headers: {
-    authorization: '629ebaab-fdf2-4b22-852e-63a8619f4529',
-    'Content-Type': 'application/json'
-  },
+  baseUrl: API_URL,
+  // headers: {
+  //   authorization: '629ebaab-fdf2-4b22-852e-63a8619f4529',
+  //   'Content-Type': 'application/json',
+  // },
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

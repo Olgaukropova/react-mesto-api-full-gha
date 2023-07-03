@@ -5,12 +5,13 @@
   
 Пожалуйста, прикрепите в это описание ссылку на сайт, размещенный на Яндекс.Облаке.
 
-Адрес репозитория: https://github.com/...
+Адрес репозитория: https://olgaukropova.github.io/react-mesto-api-full-gha/
 
 ## Ссылки на проект
 
-IP-адрес x.x.x.x
+IP-адрес IP 51.250.120.85
 
-Frontend https://...
+Frontend https://mesto.olga.nomoreparties.sbs
 
-Backend https://...
+Backend https://api.mesto.olga.nomoreparties.sbs
+

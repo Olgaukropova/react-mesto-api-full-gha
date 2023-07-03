@@ -1,4 +1,6 @@
-export const baseUrl = 'https://auth.nomoreparties.co';
+import { API_URL } from './constants';
+
+export const baseUrl = API_URL;
 
 const checkResponse = (res) => {
   if (res.ok) {
@@ -26,6 +28,7 @@ export const register = (email, password) => {
 export const authorize = (email, password) => {
   return fetch(`${baseUrl}/signin`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       "Content-Type": "application/json",
 
@@ -38,14 +41,24 @@ export const authorize = (email, password) => {
     .then(checkResponse)
 };
 
-export const getContent = (token) => {
+export const getContent = () => {
   return fetch(`${baseUrl}/users/me`, {
     method: 'GET',
+    credentials: 'include',
     headers: {
-      'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
     }
   })
   .then(checkResponse)
-} 
+};
+
+export const signout = () => {
+  return fetch(`${baseUrl}/signout`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  .then(checkResponse)
+}

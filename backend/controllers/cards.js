@@ -27,12 +27,9 @@ const createCard = (req, res, next) => {
 
 const deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.id, { runValidators: true })
-    .exec()
+    .orFail(new NotFoundError('Карточка с указанным _id не найдена.'))
     .then((card) => {
-      if (!card) {
-        return next(new NotFoundError('Карточка с указанным _id не найдена.'));
-      }
-      if (card.owner !== req.user._id) {
+      if (!card.owner.equals(req.user._id)) {
         return next(new ForbiddenError('Попытка удалить чужую карточку.'));
       }
       return res.status(200)

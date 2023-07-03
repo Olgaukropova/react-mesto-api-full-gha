@@ -13,14 +13,14 @@ const {
   validateUpdateAvatar,
 } = require('../middlewares/validations');
 
-router.get('/users', getUsers); // информация о всех пользователях
+router.get('/', getUsers); // информация о всех пользователях
 
-router.get('/users/me', getInfoUser); // информация о текущем пользователе
+router.get('/me', getInfoUser); // информация о текущем пользователе
 
-router.get('/users/:id', validateUserById, getUserById); // поиск пользователя по id
+router.get('/:id', validateUserById, getUserById); // поиск пользователя по id
 
-router.patch('/users/me/', validateUpdateUser, updateUser); // обновляет профиль
+router.patch('/me/', validateUpdateUser, updateUser); // обновляет профиль
 
-router.patch('/users/me/avatar/', validateUpdateAvatar, updateAvatar); // обновляет аватар
+router.patch('/me/avatar/', validateUpdateAvatar, updateAvatar); // обновляет аватар
 
 module.exports = router;
