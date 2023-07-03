@@ -9,7 +9,7 @@
 
 ## Ссылки на проект
 
-IP-адрес: IP 51.250.120.85
+IP-адрес: IP <51.250.120.85>
 
 Frontend https://mesto.olga.nomoreparties.sbs
 
