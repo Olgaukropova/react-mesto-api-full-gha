@@ -6,7 +6,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const auth = (req, res, next) => {
   const token = req.cookies.jwt;
   if (!token) {
-    throw new UnauthorizedError('Требуется авторизация');
+    return next(new UnauthorizedError('Требуется авторизация'));
   }
 
   let payload;

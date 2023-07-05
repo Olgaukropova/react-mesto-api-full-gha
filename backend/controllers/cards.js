@@ -18,10 +18,11 @@ const createCard = (req, res, next) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(201).send(card))
     .catch((err) => {
-      if (err.message.includes('validation failed')) {
-        return next(new BadRequestError('Вы ввели некорректные данные'));
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Вы ввели некорректные данные'));
+      } else {
+        next(err);
       }
-      return next(err);
     });
 };
 
@@ -35,13 +36,7 @@ const deleteCard = (req, res, next) => {
       return res.status(200)
         .send({ message: 'Карточка успешно удалена' });
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные.'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const likeCard = (req, res, next) => {
@@ -52,15 +47,7 @@ const likeCard = (req, res, next) => {
   )
     .orFail(() => new NotFoundError('Указанный _id не найден'))
     .then((card) => res.status(200).send({ card, message: 'Лайк успешно поставлен' }))
-    .catch((err) => {
-      if (err.message === 'Указанный _id не найден') {
-        next(new NotFoundError('Карточка с указанным _id не найдена.'));
-      } else if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные для постановки лайка.'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const dislikeCard = (req, res, next) => {
@@ -71,15 +58,7 @@ const dislikeCard = (req, res, next) => {
   )
     .orFail(() => new NotFoundError('Указанный _id не найден'))
     .then((card) => res.status(200).send({ card, message: 'Лайк удален' }))
-    .catch((err) => {
-      if (err.message === 'Указанный _id не найден') {
-        next(new NotFoundError('Карточка с указанным _id не найдена.'));
-      } else if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные для снятия лайка.'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports = {

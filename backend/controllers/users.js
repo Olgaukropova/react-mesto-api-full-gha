@@ -45,35 +45,18 @@ const logout = (req, res, next) => {
 const getInfoUser = (req, res, next) => {
   const { _id } = req.user;
   User.findById(_id)
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
     .then((user) => {
       res.status(200).send({ user });
     })
-    .catch((err) => {
-      // console.log(err.name);
-      if (err.message === 'Not found') {
-        next(new NotFoundError('Пользователь по указанному _id не найден.'));
-      } else if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const getUserById = (req, res, next) => {
   User.findById(req.params.id)
-    .orFail(() => new NotFoundError('Not found'))
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
     .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      // console.log(err.name);
-      if (err.message === 'Not found') {
-        next(new NotFoundError('Пользователь по указанному _id не найден.'));
-      } else if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
@@ -107,12 +90,10 @@ const updateUser = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .orFail(new Error('user not found'))
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'user not found') {
-        next(new NotFoundError('Пользователь с указанным _id не найден.'));
-      } else if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении профиля.'));
       } else {
         next(err);
@@ -123,12 +104,10 @@ const updateUser = (req, res, next) => {
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-    .orFail(new Error('user not found'))
+    .orFail(new Error('Пользователь с указанным _id не найден.'))
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.message === 'user not found') {
-        next(new NotFoundError('Пользователь с указанным _id не найден.'));
-      } else if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении аватара.'));
       } else {
         next(err);
