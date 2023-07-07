@@ -7,9 +7,7 @@ const {
 
 const getCards = (req, res, next) => {
   Card.find({})
-    .then((card) => res
-      .status(200)
-      .send(card))
+    .then((card) => res.send(card))
     .catch(next);
 };
 
@@ -27,14 +25,15 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.id, { runValidators: true })
+  Card.findById(req.params.id)
     .orFail(new NotFoundError('Карточка с указанным _id не найдена.'))
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
         return next(new ForbiddenError('Попытка удалить чужую карточку.'));
       }
-      return res.status(200)
-        .send({ message: 'Карточка успешно удалена' });
+      return Card
+        .deleteOne(card)
+        .then(() => res.send({ message: 'Карточка успешно удалена' }));
     })
     .catch(next);
 };
@@ -45,8 +44,8 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .orFail(() => new NotFoundError('Указанный _id не найден'))
-    .then((card) => res.status(200).send({ card, message: 'Лайк успешно поставлен' }))
+    .orFail(new NotFoundError('Карточка с указанным _id не найдена.'))
+    .then((card) => res.send({ card, message: 'Лайк успешно поставлен' }))
     .catch(next);
 };
 
@@ -56,8 +55,8 @@ const dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
-    .orFail(() => new NotFoundError('Указанный _id не найден'))
-    .then((card) => res.status(200).send({ card, message: 'Лайк удален' }))
+    .orFail(new NotFoundError('Карточка с указанным _id не найдена.'))
+    .then((card) => res.send({ card, message: 'Лайк удален' }))
     .catch(next);
 };
 

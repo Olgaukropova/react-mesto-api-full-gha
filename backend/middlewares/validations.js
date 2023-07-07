@@ -41,7 +41,7 @@ const validateUpdateUser = celebrate({
 // обновление аватара
 const validateUpdateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(RegExpForUrlValidation),
+    avatar: Joi.string().pattern(RegExpForUrlValidation).required(),
   }),
 });
 

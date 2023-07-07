@@ -1,17 +1,13 @@
 const bcrypt = require('bcryptjs');
 const jsonWebToken = require('jsonwebtoken');
 const User = require('../models/users');
-const {
-  BadRequestError,
-  NotFoundError,
-  ConflictError,
-} = require('../errors/errors');
+const { BadRequestError, NotFoundError, ConflictError } = require('../errors/errors');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -30,7 +26,15 @@ const login = (req, res, next) => {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
         })
-        .send({ data: user });
+        .send({
+          data: {
+            _id: user._id,
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+          },
+        });
     })
     .catch(next);
 };
@@ -43,19 +47,15 @@ const logout = (req, res, next) => {
 };
 
 const getInfoUser = (req, res, next) => {
-  const { _id } = req.user;
-  User.findById(_id)
-    .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
-    .then((user) => {
-      res.status(200).send({ user });
-    })
+  User.findById(req.user._id)
+    .then((user) => res.send({ user }))
     .catch(next);
 };
 
 const getUserById = (req, res, next) => {
   User.findById(req.params.id)
     .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch(next);
 };
 
@@ -73,7 +73,10 @@ const createUser = (req, res, next) => {
       password: hash,
     }))
     .then(() => res.status(201).send({
-      name, about, avatar, email,
+      name,
+      about,
+      avatar,
+      email,
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -91,7 +94,7 @@ const updateUser = (req, res, next) => {
 
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении профиля.'));
@@ -104,8 +107,8 @@ const updateUser = (req, res, next) => {
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-    .orFail(new Error('Пользователь с указанным _id не найден.'))
-    .then((user) => res.status(200).send(user))
+    .orFail(new NotFoundError('Пользователь с указанным _id не найден.'))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при обновлении аватара.'));
